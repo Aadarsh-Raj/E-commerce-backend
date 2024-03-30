@@ -172,76 +172,77 @@ const updatePassword = async (req, res) => {
   }
 };
 // add to wishlist
-const addToWishlist = async (req, res)=>{
-try {
-  const user = await UserModel.findById(req.user._id);
-  if(!user){
-    return res.json({
-      success: false,
-      message: "User not found"
-    })
-  }
-  if(!user.wishlist){
-    const addProduct = {
-      wishlist:[{product: req.body.productId}]
-    }
-    await UserModel.findByIdAndUpdate(req.user._id, addProduct);
-    
-  }else{
-    const product = user.wishlist.find(item => item.product.toString() == req.body.productId);
-    if(product){
+const addToWishlist = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user._id);
+    if (!user) {
       return res.json({
         success: false,
-        message: "Product already exist in wishlist"
-      })
-    };
-    const addProduct = {
-      $push:{
-        "wishlist":{product:req.body.productId}
+        message: "User not found",
+      });
+    }
+    if (!user.wishlist) {
+      const addProduct = {
+        wishlist: [{ product: req.body.productId }],
+      };
+      await UserModel.findByIdAndUpdate(req.user._id, addProduct);
+    } else {
+      const product = user.wishlist.find(
+        (item) => item.product.toString() == req.body.productId
+      );
+      if (product) {
+        return res.json({
+          success: false,
+          message: "Product already exist in wishlist",
+        });
       }
+      const addProduct = {
+        $push: {
+          wishlist: { product: req.body.productId },
+        },
+      };
+      await UserModel.findByIdAndUpdate(req.user._id, addProduct);
     }
-    await UserModel.findByIdAndUpdate(req.user._id, addProduct);
-  }
 
-res.json({
-  success: true,
-  message: "Added to wishlist"
-})
-} catch (error) {
-  console.log(error);
-  res.json({
-    success: false,
-    message: "Something went wrong"
-  })
-}
-}
+    res.json({
+      success: true,
+      message: "Added to wishlist",
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
 // remove from wishlist
-const removeFromWishlist = async (req, res)=>{
-try {
-  const user = await UserModel.findById(req.user._id);
-  if(!user){
-    return res.json({
-      success:false,
-      message:"User not found"
-    })
-  };
-   await UserModel.findByIdAndUpdate(req.user._id, {
-    $pull:{
-      wishlist:{product:req.params.productId}
+const removeFromWishlist = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user._id);
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
     }
-  })
- res.json({
-  success: true,
-  message: "Removed product from wishlist"
- })
-} catch (error) {
-  console.log(error);
-  res.json({
-    success: false,
-    message: "Something went wrong"
-  })
-}
-}
+    await UserModel.findByIdAndUpdate(req.user._id, {
+      $pull: {
+        wishlist: { product: req.params.productId },
+      },
+    });
+    res.json({
+      success: true,
+      message: "Removed product from wishlist",
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
 // logout
 const logout = async (req, res) => {
   try {

@@ -85,6 +85,12 @@ const deleteProduct = async (req, res) => {
 // buyer, seller, admin
 const getProducts = async (req, res) => {
   const product = await ProductModel.find({});
+  if(!product){
+    return res.json({
+      success: false,
+      message: "Products not found"
+    })
+  }
   res.json({
     success: true,
     message: "all products",
@@ -96,6 +102,12 @@ const getProducts = async (req, res) => {
 const editProduct = async (req, res) => {
   try {
     const product = await ProductModel.findById(req.params.productId);
+    if(!product){
+      return res.json({
+        success: false,
+        message: "Products not found"
+      })
+    }
     if (req.user._id.equals(product.sellerId)) {
       // change the data of the product from body
       if (
