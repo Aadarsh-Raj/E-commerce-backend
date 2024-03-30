@@ -26,10 +26,18 @@ router.patch(
 );
 
 // add to wishlist
-router.post("/wishlist", authMiddleware(["buyer"]), userController.addToWishlist);
+router.post(
+  "/wishlist",
+  authMiddleware(["buyer"]),
+  userController.addToWishlist
+);
 
 // remove from wishlist
-router.delete("/wishlist/:productId", authMiddleware(["buyer"]), userController.removeFromWishlist);
+router.delete(
+  "/wishlist/:productId",
+  authMiddleware(["buyer"]),
+  userController.removeFromWishlist
+);
 
 // log out the user
 router.post(
