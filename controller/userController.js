@@ -218,7 +218,22 @@ res.json({
 // remove from wishlist
 const removeFromWishlist = async (req, res)=>{
 try {
-  
+  const user = await UserModel.findById(req.user._id);
+  if(!user){
+    return res.json({
+      success:false,
+      message:"User not found"
+    })
+  };
+   await UserModel.findByIdAndUpdate(req.user._id, {
+    $pull:{
+      wishlist:{product:req.params.productId}
+    }
+  })
+ res.json({
+  success: true,
+  message: "Removed product from wishlist"
+ })
 } catch (error) {
   console.log(error);
   res.json({
