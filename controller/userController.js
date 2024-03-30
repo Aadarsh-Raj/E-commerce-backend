@@ -181,8 +181,34 @@ try {
       message: "User not found"
     })
   }
+  if(!user.wishlist){
+    const addProduct = {
+      wishlist:[{product: req.body.productId}]
+    }
+    await UserModel.findByIdAndUpdate(req.user._id, addProduct);
+    
+  }else{
+    const product = user.wishlist.find(item => item.product.toString() == req.body.productId);
+    if(product){
+      return res.json({
+        success: false,
+        message: "Product already exist in wishlist"
+      })
+    };
+    const addProduct = {
+      $push:{
+        "wishlist":{product:req.body.productId}
+      }
+    }
+    await UserModel.findByIdAndUpdate(req.user._id, addProduct);
+  }
 
+res.json({
+  success: true,
+  message: "Added to wishlist"
+})
 } catch (error) {
+  console.log(error);
   res.json({
     success: false,
     message: "Something went wrong"
@@ -194,6 +220,7 @@ const removeFromWishlist = async (req, res)=>{
 try {
   
 } catch (error) {
+  console.log(error);
   res.json({
     success: false,
     message: "Something went wrong"

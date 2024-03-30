@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     default: null
   },
   wishlist:{
-    type: wishlistSchema,
+    type: [wishlistSchema],
     require: false,
     default:[]
   }
